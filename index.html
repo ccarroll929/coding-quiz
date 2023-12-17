@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="eng">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Timed Coding Quiz</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body>
+    <div class="quiz-info">
+    <header>
+        <h1 class="title">Timed Coding Quiz</h1>
+ </header>
+
+ <!-- Outlined rules for the user -->
+ <div class="quiz-rules">
+    <h2>Quiz Rules</h2>
+    <ol>
+        <li class="rule">Once you click "Start Quiz" you will have 1 minute to complete the quiz.</li>
+        <li class="rule">For every correct answer you will receive 10 points</li>
+        <li class="rule">For each missed question there will be a -10 second penalty on the timer</li>
+    </ol> 
+</div>
+</div>
+    <!-- Created start button -->
+        <button id="start-quiz" class="buttons">Start Quiz</button>
+    <section class="quiz-box">
+        <div id="countdown"></div>
+                <div id="question-number" class="questions">
+                    <!-- Insert number of questions from JS here-->
+                </div>
+                <!-- Insert questions from JS here--> 
+                 <!-- Insert multiple choice options from JS here-->
+            <ul class="answer">
+                <li>
+                    <input type="radio" name="answer" id="a" class="answer">
+                    <label for="a" id="a-text"></label>
+                </li>
+
+                <li>
+                    <input type="radio" name="answer" id="b" class="answer">
+                    <label for="b" id="b-text"></label> 
+                </li>
+
+                <li>
+                    <input type="radio" name="answer" id="c" class="answer">
+                    <label for="c" id="c-text"></label>
+                </li>
+
+                <li>
+                    <input type="radio" name="answer" id="d" class="answer">
+                    <label for="d" id="d-text"></label>
+                </li>
+            </ul>  
+        <footer>
+            <button id="next-question">Next Question</button>
+            <div class="results-box">
+                <div class="high-score">High score:</div>
+                    <!-- Insert high score text from JS here -->
+                    <br><button id="restart">Try again</button>
+                
+            </div>
+        </footer>
+    </section> 
+
+    <!-- Results Box -->
+
+    <script src="./assets/js/script.js"></script>
+</body>
+</html>
