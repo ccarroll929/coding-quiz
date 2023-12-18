@@ -100,11 +100,12 @@ footer {
     display: inline-flex; 
 }
 
-.results-box, .high-score {
+.results-box {
     background-color: #b8c6db; 
     color: black; 
     font-size: 24px; 
     display: none; 
-    
-
+}
+.high-score {
+    color:black;
 }

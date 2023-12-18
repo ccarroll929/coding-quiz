@@ -1,7 +1,6 @@
 // Gathering the required HTML elements
 
 let quizInfo = document.querySelector('.quiz-info')
-let rulesBox = document.querySelector('.quiz-rules');
 let quizBox = document.querySelector('.quiz-box');
 let resultsBox = document.querySelector('.results-box');
 let questionList = document.getElementById('questions');
@@ -10,6 +9,7 @@ let answerEl = document.querySelectorAll('.answer')
 let questionElement = document.getElementById('question-number');
 let choiceBoxes = document.getElementById('choiceBoxes')
 let timerEl = document.getElementById('countdown'); 
+let timeLeft = 90;
 
 
 let aText = document.getElementById('a-text');
@@ -25,9 +25,15 @@ let tryAgain = document.getElementById('restart');
 
 
 // Score variables 
-let highScore = document.querySelector('.high-score');
+let highScoreEl = document.querySelector('.high-score');
 let questionCount = 0; 
 let userScore = 0; 
+let mostRecentScore = localStorage.getItem("mostRecentScore");
+let high_scores = 'highScores'; 
+let highScoreString = localStorage.getItem("high_scores");
+let highScores = JSON.parse(localStorage.getItem("highScoreString")) ?? [];
+let maxHighScore = 1; 
+
 
 
 // Creating an object with arrays for the questions and answers 
@@ -133,7 +139,6 @@ let questions = [
 // Creating function to display quizBox on button click
 function displayQuizBox() {
     quizBox.style.display="block"; 
-   
 }
 function displayQuestions(){
 
@@ -168,31 +173,60 @@ function displayQuestions(){
             if(userInput === questions[questionCount].correct) {
             userScore+=10 
             }
-            questionCount++
+        else {
+            timeLeft = timeLeft-=5; 
+            timerEl.textContent = timeLeft + ' seconds left';
+        }
+            timeLeft--;
+            questionCount++ 
         if(questionCount < questions.length) {
                 displayQuestions()
             } 
         else {
             resultsBox.style.display="block";
             nextBtn.style.display="none";
-            localStorage.setItem("high-score", userScore)
-            console.log("Local Storage:" + localStorage.getItem("high-score"))
-            resultsBox.innerHTML = `
-            <div class=".results-box">You scored ${userScore}/100 points<br>
-            </div>
-            <button onclick="location.reload()">Reload</button>
-            <div class=".high-score">High Score: ${localStorage.getItem("high-score")}</div>`
-         }
+            mostRecentScore = userScore; 
+            highestScore();
+            saveHighScore();
+            resultsBox.innerHTML = ` 
+            <div class=".results-box">You scored ${mostRecentScore}/100 points<br>
+            <button onclick="location.reload()">Reload</button></div>
+            <div class=".high-score">High Score: ${localStorage.getItem(high_scores, JSON.stringify(highScores))}</div>
+            `
+              }
                         }
 });
+
+//Store highest score
+function highestScore () {
+    let highScores = JSON.parse(localStorage.getItem(high_scores)) ?? [];
+if (mostRecentScore > userScore) {
+    saveHighScore(); 
+    console.log("Local Storage:" + localStorage.getItem(high_scores, JSON.stringify(highScores)))
+  
+}
+}
+
+function saveHighScore() {
+    highScores.push(mostRecentScore);
+    highScores.sort((a, b) => b.mostRecentScorescore - a.mostRecentScorescore);
+    highScores.splice(1);
+    localStorage.setItem(high_scores, JSON.stringify(highScores))
+}
+
+
+
 
 // Function to start timer
 function countdown() {
     var timeLeft = 90;
     let timeInterval = setInterval(function () {
-        let countdownEl = timeLeft--; 
         if (timeLeft > 1) {
-            timerEl.textContent = countdownEl + ' seconds left';
+            timerEl.textContent = timeLeft + ' seconds left';
+            timeLeft--; 
+        } else if (timeLeft === 1) {
+            timerEl.textContent = timeLeft + ' second left';
+            timeLeft--; 
         } else {
             clearInterval(timeInterval);
             displayResults(); 
@@ -208,7 +242,6 @@ startBtn.addEventListener("click", function(event){
     quizInfo.style.display="none";
     startBtn.style.display="none";
     questionCount = 0;
-    userScore = 0; 
     console.log("You clicked the start button"); 
     displayQuizBox();
     countdown();
