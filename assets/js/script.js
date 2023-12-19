@@ -10,8 +10,10 @@ let questionElement = document.getElementById('question-number');
 let choiceBoxes = document.getElementById('choiceBoxes')
 let timerEl = document.getElementById('countdown'); 
 let timeLeft = 90;
+secondsElapsed = 0; 
+let interval;
 
-
+let questionCount = 0; 
 let aText = document.getElementById('a-text');
 let bText = document.getElementById('b-text');
 let cText = document.getElementById('c-text');
@@ -20,20 +22,14 @@ let dText = document.getElementById('d-text');
 //Buttons
 let startBtn = document.getElementById('start-quiz');
 let nextBtn = document.getElementById('next-question');
-let submitBtn = document.getElementById('submit-button');
 let tryAgain = document.getElementById('restart');
 
 
 // Score variables 
 let highScoreEl = document.querySelector('.high-score');
-let questionCount = 0; 
 let userScore = 0; 
-let mostRecentScore = localStorage.getItem("mostRecentScore");
-let high_scores = 'highScores'; 
-let highScoreString = localStorage.getItem("high_scores");
-let highScores = JSON.parse(localStorage.getItem("highScoreString")) ?? [];
-let maxHighScore = 1; 
-
+let currentQuestion = 0; 
+let highScore = [];
 
 
 // Creating an object with arrays for the questions and answers 
@@ -45,26 +41,26 @@ let questions = [
         b: "Variable Expression",
         c: "Conditional Statements",
         d: "Trigger Events",
-        penaltyTime: -5, 
+      
     },
     {   number: 2,
         question: "2. What is used to compare values inside variables and returns a 'true' or 'false' value?",
         correct: "a", 
         a: "Comparison and Logical Operators",
-        b: "Math()",
+        b: "Math object",
         c: "Boolean Test",
         d: "Function",
-        penaltyTime: -5,
+  
     },
 
     {   number: 3,
         question: "3. In JavaScript, what is the name of the object that performs mathematical operations with variable inputs?",
         correct: "c",
-        a: "Calculate.",
+        a: "Calculate object",
         b: "Logical Operator",
-        c: "Math.",
-        d: "Solve.",
-        penaltyTime: -5,
+        c: "Math object",
+        d: "Solve object",
+     
     },
     {   number: 4,
         question: "4. Which scope contains all the variables and code that will be read and executed by default?",
@@ -73,7 +69,7 @@ let questions = [
         b: "Global Scope",
         c: "Local Scope",
         d: "Minor Scope",
-        penaltyTime: -5,
+       
     },
     {   number: 5,
         question: "5. Which scope contains variables that can only be accessed inside a function ",
@@ -82,7 +78,7 @@ let questions = [
         b: "Minor Scope",
         c: "Major Scope",
         d: "Global Scope",
-        penaltyTime: -5,
+      
     },
     {   number: 6,
         question: "6. In JavaScript, what is a block of code that can be called upon to perform a specific task?",
@@ -91,7 +87,7 @@ let questions = [
         b: "Conditional Statement",
         c: "Else Loop",
         d: "Function",
-        penaltyTime: -5,
+      
     },
 
     {
@@ -102,7 +98,7 @@ let questions = [
         b: "Const",
         c: "Array",
         d: "Let",
-        penaltyTime: -5,
+      
     },
     {
         number: 8,
@@ -112,7 +108,7 @@ let questions = [
         b: "String",
         c: "Function",
         d: "Array",
-        penaltyTime: -5,
+      
     },
     {
         number: 9,
@@ -122,7 +118,7 @@ let questions = [
         b: "Conditional Statement",
         c: "Function",
         d: "For Loop",
-        penaltyTime: -5,
+      
     },
     {
         number: 10,
@@ -132,7 +128,7 @@ let questions = [
         b: "Button",
         c: "Link",
         d: "Script",
-        penaltyTime: -5,
+      
     },
 ]
 
@@ -174,8 +170,9 @@ function displayQuestions(){
             userScore+=10 
             }
         else {
-            timeLeft = timeLeft-=5; 
+            timeLeft-=5; 
             timerEl.textContent = timeLeft + ' seconds left';
+            timeLeft--;
         }
             timeLeft--;
             questionCount++ 
@@ -185,37 +182,31 @@ function displayQuestions(){
         else {
             resultsBox.style.display="block";
             nextBtn.style.display="none";
-            mostRecentScore = userScore; 
-            highestScore();
-            saveHighScore();
+            showHighScore();
             resultsBox.innerHTML = ` 
-            <div class=".results-box">You scored ${mostRecentScore}/100 points<br>
+            <div class=".results-box">You scored ${userScore}/100 points<br>
             <button onclick="location.reload()">Reload</button></div>
-            <div class=".high-score">High Score: ${localStorage.getItem(high_scores, JSON.stringify(highScores))}</div>
-            `
-              }
+            <div class=".high-score">High Score: <br> ${localStorage.getItem("userScore")}</div>
+         `
+        }
                         }
 });
 
 //Store highest score
 function highestScore () {
-    let highScores = JSON.parse(localStorage.getItem(high_scores)) ?? [];
-if (mostRecentScore > userScore) {
-    saveHighScore(); 
-    console.log("Local Storage:" + localStorage.getItem(high_scores, JSON.stringify(highScores)))
-  
-}
+highScore = JSON.parse(localStorage.getItem("userScore")) || [];
+console.log(localStorage.getItem("userScore"))
 }
 
-function saveHighScore() {
-    highScores.push(mostRecentScore);
-    highScores.sort((a, b) => b.mostRecentScorescore - a.mostRecentScorescore);
-    highScores.splice(1);
-    localStorage.setItem(high_scores, JSON.stringify(highScores))
+function showHighScore () {
+    highScore = JSON.parse(localStorage.getItem("userScore")) || [];
+    highScore.push(userScore)
+    highScore.sort((a, b) => b - a)
+    highScore.splice(1);
+    Math.max(JSON.parse(localStorage.getItem("userScore"))); 
+    localStorage.setItem("userScore", JSON.stringify(highScore));
+    highestScore(); 
 }
-
-
-
 
 // Function to start timer
 function countdown() {
@@ -229,12 +220,19 @@ function countdown() {
             timeLeft--; 
         } else {
             clearInterval(timeInterval);
-            displayResults(); 
+            timerEl.textContent = "Time's Up";
         }
     }, 1000);
 }
 
-
+function countdownPenalty () {
+    timeLeft = 90;
+    let timeInterval = setInterval(function (){
+        if (timeLeft > 1) {
+            timerEl.textContent
+        }
+    })
+}
 
 // Adding an event listener for the start button 
 startBtn.addEventListener("click", function(event){
