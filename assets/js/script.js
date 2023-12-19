@@ -170,9 +170,8 @@ function displayQuestions(){
             userScore+=10 
             }
         else {
-            timeLeft-=5; 
+            timeLeft-=10; 
             timerEl.textContent = timeLeft + ' seconds left';
-            timeLeft--;
         }
             timeLeft--;
             questionCount++ 
@@ -210,7 +209,6 @@ function showHighScore () {
 
 // Function to start timer
 function countdown() {
-    var timeLeft = 90;
     let timeInterval = setInterval(function () {
         if (timeLeft > 1) {
             timerEl.textContent = timeLeft + ' seconds left';
@@ -223,15 +221,6 @@ function countdown() {
             timerEl.textContent = "Time's Up";
         }
     }, 1000);
-}
-
-function countdownPenalty () {
-    timeLeft = 90;
-    let timeInterval = setInterval(function (){
-        if (timeLeft > 1) {
-            timerEl.textContent
-        }
-    })
 }
 
 // Adding an event listener for the start button 
