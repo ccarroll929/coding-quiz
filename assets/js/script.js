@@ -136,7 +136,7 @@ let questions = [
 function displayQuizBox() {
     quizBox.style.display="block"; 
 }
-function displayQuestions(){
+function startQuiz(){
 
     deselectAnswers();
     let currentQuestion = questions[questionCount];
@@ -176,7 +176,7 @@ function displayQuestions(){
             timeLeft--;
             questionCount++ 
         if(questionCount < questions.length) {
-                displayQuestions()
+                startQuiz(); 
             } 
         else {
             resultsBox.style.display="block";
@@ -218,7 +218,14 @@ function countdown() {
             timeLeft--; 
         } else {
             clearInterval(timeInterval);
-            timerEl.textContent = "Time's Up";
+            quizBox.style.display="none";
+            resultsBox.style.display="block";
+            showHighScore();
+            resultsBox.innerHTML = ` 
+            <div class=".results-box">You scored ${userScore}/100 points<br>
+            <button onclick="location.reload()">Reload</button></div>
+            <div class=".high-score">High Score: <br> ${localStorage.getItem("userScore")}</div>
+         `
         }
     }, 1000);
 }
@@ -232,7 +239,7 @@ startBtn.addEventListener("click", function(event){
     console.log("You clicked the start button"); 
     displayQuizBox();
     countdown();
-    displayQuestions();
+    startQuiz();
 
 })
 
